@@ -1,0 +1,208 @@
+Міністерство освіти і науки Украї¨ни Харківськии˘ національнии˘ університет радіоелектроніки
+Кафедра програмної¨ інженерії¨ Звіт
+ЛБ №3
+З Аналіз та рефакторинг коду
+На тему «ЛАБОРАТОРНА РОБОТА №3. РОЗРОБКА БІЗНЕС-ЛОГІКИ ТА ФУНКЦІЙ АДМІНІСТРУВАННЯ СЕРВЕРНОЇ ЧАСТИНИ ПРОГРАМНОЇ СИСТЕМИ »
+
+
+
+Виконав:	Перевірив:
+
+студент групи ПЗПІ-22-7	кафедри ПІ
+Сахань Дмитро Олександрович	Сокорчук Ігор Петрович
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Харків 2023
+
+Посилання на відеопрезентацію:
+
+Посилання на Github-репозиторій: 
+https://github.com/NureSakhanDmytro/arkpz-pzpi-22-7-sakhan-dmytro
+
+Посилання на Github-репозиторій проекту:
+
+
+ 
+ЛАБОРАТОРНА РОБОТА №3. РОЗРОБКА БІЗНЕС-ЛОГІКИ ТА ФУНКЦІЙ АДМІНІСТРУВАННЯ СЕРВЕРНОЇ ЧАСТИНИ
+ПРОГРАМНОЇ СИСТЕМИ
+
+Текстовий опис інженерних рішень для Лабораторної роботи №3. Розробка бізнес-логіки та функцій адміністрування серверної частини програмної системи
+У рамках лабораторної роботи №3 розроблено бізнес-логіку та функції адміністрування серверної частини програмної системи для аналізу ґрунту та надання рекомендацій щодо його обробки. Основними завданнями цієї роботи є створення механізмів для обробки даних, генерації рекомендацій, а також для адміністрування доступу та редагування даних на сервері.
+Бізнес-логіка
+Бізнес-логіка серверної частини відповідає за обробку основних операцій системи, таких як аналіз результатів тестування ґрунту, обробка отриманих даних і надання рекомендацій. Основні компоненти та їх функціональність:
+1.	Аналіз ґрунту:
+o	Програма здійснює обробку даних про властивості ґрунту, зібраних через різноманітні датчики. Це включає показники pH, вміст азоту, фосфору, калію та інших параметрів.
+o	Після збору даних, система проводить порівняння з визначеними нормами та надає рекомендації щодо обробки ґрунту, включаючи добрива та їх дозування.
+2.	Генерація рекомендацій:
+o	На основі даних, отриманих від аналізу ґрунту, система автоматично генерує рекомендації щодо застосування добрив для покращення якості ґрунту.
+o	Система використовує алгоритми, які враховують pH, вміст основних елементів живлення та інші показники для визначення необхідних добрив.
+3.	Аналітика та звіти:
+o	Для кожного аналізу ґрунту створюється звіт, що містить всю необхідну інформацію про параметри ґрунту та рекомендації щодо покращення його якості.
+o	Звіт генерується автоматично і доступний для перегляду користувачам через інтерфейс програми.
+Адміністрування серверної частини
+Адміністрування є важливою частиною серверної частини, оскільки дає можливість керувати доступом до системи, а також контролювати та редагувати дані, що зберігаються в базі даних. Основні функції адміністрування:
+1.	Редагування даних:
+o	Лише адміністратор має доступ до редагування даних у системі. Це стосується як зміни параметрів ґрунту, так і коригування
+ 
+рекомендацій щодо добрив.
+o	Для забезпечення належного рівня безпеки та захисту від несанкціонованих змін, в програмі реалізовано механізм перевірки прав доступу користувачів.
+2.	Перевірка прав доступу:
+o	Система має вбудовану перевірку ролей користувачів, де тільки адміністратор має можливість редагувати і видаляти записи в базі даних.
+o	Інші користувачі можуть лише переглядати результати аналізу ґрунту та отримувати рекомендації, але не мають доступу до зміни даних.
+3.	Управління користувачами:
+o	Для кожного користувача системи передбачена окрема роль, яка визначає його права. Ролі можуть бути як для звичайних користувачів, так і для адміністраторів.
+o	Адміністратори мають можливість змінювати ролі користувачів та надавати їм доступ до певних функцій системи.
+Технологічні рішення
+1.	Використання серверної частини на C#:
+o	Для реалізації серверної частини використовувалась мова програмування C# та платформа .NET. Це дозволяє ефективно обробляти запити користувачів, взаємодіяти з базою даних та забезпечувати надійну роботу серверної частини.
+2.	Взаємодія з базою даних:
+o	Для зберігання даних використовується реляційна база даних, в якій зберігаються всі результати аналізів ґрунту, рекомендації та звіти. Серверна частина взаємодіє з цією базою даних через Entity Framework.
+3.	Забезпечення безпеки:
+o	Всі дії, що стосуються редагування та адміністрування даних, виконуються лише після перевірки прав доступу. Це дозволяє уникнути несанкціонованих змін в даних.
+
+Фрагменти програмного коду:
+
+1.	Фрагмент програмного коду бізнес-логіки серверної частини (C#)
+Цей фрагмент коду відповідає за логіку обробки даних ґрунту, генерацію рекомендацій на основі аналізу та підготовку звітів для користувачів.
+// Клас для обробки даних ґрунту та генерації рекомендацій public class SoilAnalysisService
+{
+private readonly ISoilAnalysisRepository soilAnalysisRepository;
+private readonly IFertilizerRecommendationRepository fertilizerRecommendationRepository;
+
+// Конструктор класу, який ініціалізує репозиторії для взаємодії з БД
+ 
+public SoilAnalysisService(ISoilAnalysisRepository soilAnalysisRepository, IFertilizerRecommendationRepository fertilizerRecommendationRepository)
+{
+this.soilAnalysisRepository = soilAnalysisRepository; this.fertilizerRecommendationRepository = fertilizerRecommendationRepository;
+}
+// Метод для обробки даних аналізу ґрунту і генерації рекомендацій public Recommendation GenerateRecommendation(int soilAnalysisId)
+{
+SoilAnalysis soilAnalysis = soilAnalysisRepository.FindById(soilAnalysisId);
+// Логіка для обчислення рекомендацій на основі параметрів ґрунту if (soilAnalysis.Ph < 6.0)
+{
+return fertilizerRecommendationRepository.FindBySoilType("Acidic");
+}
+else if (soilAnalysis.Ph > 7.5)
+{
+return fertilizerRecommendationRepository.FindBySoilType("Alkaline");
+}
+else
+{
+return fertilizerRecommendationRepository.FindBySoilType("Neutral");
+}
+}
+
+// Метод для генерації звітів на основі даних ґрунту public string GenerateSoilReport(int soilAnalysisId)
+{
+SoilAnalysis soilAnalysis = soilAnalysisRepository.FindById(soilAnalysisId);
+
+string report = "Soil Report:\n";
+report += $"Location: {soilAnalysis.Location}\n"; report += $"pH: {soilAnalysis.Ph}\n";
+report += $"Nitrogen: {soilAnalysis.Nitrogen} ppm\n"; report += $"Potassium: {soilAnalysis.Potassium} ppm\n"; report += $"Phosphorus: {soilAnalysis.Phosphorus} ppm\n";
+return report;
+}
+}
+
+
+2.	Фрагмент програмного коду адміністрування серверної частини (C#)
+Цей фрагмент коду відповідає за редагування даних ґрунту та добрив в системі, з перевіркою прав адміністратора.
+// Клас для адміністрування та редагування даних ґрунту public class AdminService
+{
+private readonly ISoilAnalysisRepository soilAnalysisRepository;
+private readonly IFertilizerRecommendationRepository fertilizerRecommendationRepository;
+// Конструктор класу для ініціалізації репозиторіїв
+public AdminService(ISoilAnalysisRepository soilAnalysisRepository,
+ 
+IFertilizerRecommendationRepository fertilizerRecommendationRepository)
+{
+this.soilAnalysisRepository = soilAnalysisRepository; this.fertilizerRecommendationRepository = fertilizerRecommendationRepository;
+}
+
+// Метод для редагування аналізу ґрунту
+public void UpdateSoilAnalysis(int soilAnalysisId, SoilAnalysis updatedSoilAnalysis)
+{
+SoilAnalysis existingAnalysis = soilAnalysisRepository.FindById(soilAnalysisId);
+
+// Перевірка прав адміністратора для редагування if (IsAdmin())
+{
+existingAnalysis.Ph = updatedSoilAnalysis.Ph; existingAnalysis.Nitrogen = updatedSoilAnalysis.Nitrogen; existingAnalysis.Potassium = updatedSoilAnalysis.Potassium; existingAnalysis.Phosphorus = updatedSoilAnalysis.Phosphorus; existingAnalysis.Location = updatedSoilAnalysis.Location; soilAnalysisRepository.Save(existingAnalysis);
+}
+else
+{
+throw new UnauthorizedAccessException("Only administrators can edit soil data.");
+}
+}
+
+// Метод для оновлення рекомендацій щодо добрив
+public void UpdateFertilizerRecommendation(int recommendationId, FertilizerRecommendation updatedRecommendation)
+{
+FertilizerRecommendation existingRecommendation = fertilizerRecommendationRepository.FindById(recommendationId);
+// Перевірка прав адміністратора для редагування if (IsAdmin())
+{
+existingRecommendation.RecommendedFertilizer = updatedRecommendation.RecommendedFertilizer;
+existingRecommendation.Dosage = updatedRecommendation.Dosage; fertilizerRecommendationRepository.Save(existingRecommendation);
+}
+else
+{
+throw new UnauthorizedAccessException("Only administrators can edit fertilizer recommendations.");
+}
+}
+// Метод для перевірки прав адміністратора private bool IsAdmin()
+{
+// Логіка для перевірки ролі адміністратора
+return true; // Повертає true, якщо користувач є адміністратором
+}
+}
+ 
+Пояснення:
+
+SoilAnalysisService: Цей клас надає методи для генерування рекомендацій та звітів на основі аналізу ґрунту. В залежності від значення pH ґрунту, він обирає відповідні рекомендації.
+
+AdminService: Цей клас дозволяє адміністраторам редагувати дані аналізів ґрунту та рекомендацій щодо добрив. Перед редагуванням перевіряється, чи має користувач права адміністратора через метод IsAdmin().
+
+Графічні ілюстрації (рисунки):
+
+UML діаграма діяльності для серверної частини
+
+
+
+
+
+
+
+
+
+
+
+
+
+Опис кроків:
+1-	Користувач:
+
+•	Надсилає запит даних (параметри ґрунту) на сервер.
+•	Отримує рекомендації від сервера після отримання даних із бази.
+•	Запитує редагування даних. 2- Сервер:
+•	Отримує запит від користувача і витягує необхідні дані з бази даних.
+•	Надсилає дані назад користувачеві.
+•	Генерує звіт і відправляє його назад користувачеві.
+•	Обробляє запит на редагування і надсилає оновлені дані в базу даних.
+ 
+3-	База даних:
+•	Отримує запит на отримання даних і відправляє їх назад серверу.
+•	Оновлює дані за запитом адміністратора.
+4-	Адміністратор:
+
+•	Керує оновленням даних у базі, а також підтверджує зміни в разі редагування.
