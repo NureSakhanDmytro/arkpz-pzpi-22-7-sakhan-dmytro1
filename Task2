@@ -1,0 +1,140 @@
+Міністерство освіти і науки Украї¨ни Харківськии˘ національнии˘ університет радіоелектроніки
+Кафедра програмної¨ інженерії¨ Звіт
+ЛБ №2
+З Аналіз та рефакторинг коду
+На тему «РОЗРОБКА БАЗИ ДАНИХ ДЛЯ СЕРВЕРНОЇ ЧАСТИНИ ПРОГРАМНОЇ СИСТЕМИ ТА ПРИКЛАДНОГО ПРОГРАМНОГО ІНТЕРФЕЙСУ»
+
+
+
+Виконав:	Перевірила:
+
+студент групи ПЗПІ-22-7	кафедри ПІ
+Сахань Дмитро Олександрович	Сокорчук Ігор Петрович
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Харків 2023
+
+Посилання на відеопрезентацію:
+
+Посилання на Github-репозиторій:
+ https://github.com/Jopselion/arkpz-pzpi-22-7- sakhan-dmytro/edit/main/Task2
+
+Посилання на Github-репозиторій проекту: 
+ 
+ЛАБОРАТОРНА РОБОТА №2. РОЗРОБКА БАЗИ ДАНИХ ДЛЯ СЕРВЕРНОЇ ЧАСТИНИ ПРОГРАМНОЇ СИСТЕМИ ТА
+ПРИКЛАДНОГО ПРОГРАМНОГО ІНТЕРФЕЙСУ
+
+1.	Текстовий опис інженерних рішень
+У даному проекті реалізовано систему для моніторингу та аналізу ґрунту в реальному часі. Основною метою є автоматизація процесу збору та обробки даних з різних сенсорів, а також надання рекомендацій щодо використання добрив для покращення якості ґрунту. Система дозволяє користувачам отримувати аналітичні дані, а також моніторити важливі показники, такі як вологість, рівень pH, азот, калій та інші характеристики ґрунту.
+
+
+Архітектура системи:
+•	Клієнтська частина (інтерфейс) взаємодіє із серверною частиною.
+•	Серверна частина відповідає за обробку запитів від клієнтів, взаємодію з базою даних і формування відповідей.
+•	База даних містить всі необхідні дані про аналізи ґрунту, рекомендації щодо добрив та інші параметри, які необхідні для роботи системи.
+
+
+Специфікація для взаємодії серверної частини з клієнтами
+Система використовує RESTful API для взаємодії між серверною частиною та клієнтами. Ось основні ендпоїнти API:
+•	GET /api/soil-analysis/{id} — Отримати інформацію про конкретний аналіз ґрунту за його id.
+•	POST /api/soil-analysis — Надіслати новий аналіз ґрунту (включає всі необхідні дані, такі як pH, азот, калій тощо).
+•	GET /api/fertilizer-recommendations/{analysis_id} — Отримати рекомендації щодо добрив на основі аналізу ґрунту.
+•	GET /api/weather-data/{location} — Отримати дані про погодні умови для конкретної локації.
+•	POST /api/users — Реєстрація нового користувача (адміністратора або агронома).
+Система використовує JSON формат для обміну даними.
+ 
+Фрагменти програмного коду
+1.	Логіка взаємодії серверної частини з БД на С#
+2.	
+Приклад коду:
+public class SoilAnalysisRepository
+{
+private readonly string connectionString;
+public SoilAnalysisRepository(string connectionString)
+{
+this.connectionString = connectionString;
+}
+
+public SoilAnalysis GetAnalysisById(int id)
+{
+using (var connection = new SqlConnection(connectionString))
+{
+connection.Open();
+var command = new SqlCommand("SELECT * FROM soil_analysis WHERE id = @id", connection);
+command.Parameters.AddWithValue("@id", id); var reader = command.ExecuteReader();
+if (reader.Read())
+{
+return new SoilAnalysis
+{
+Id = reader.GetInt32(0), Location = reader.GetString(3), PH = reader.GetDecimal(4),
+Nitrogen = reader.GetDecimal(5), Potassium = reader.GetDecimal(6), Phosphorus = reader.GetDecimal(7), Moisture = reader.GetDecimal(8), Density = reader.GetDecimal(9), Crop = reader.GetString(10)
+};
+}
+return null;
+}
+}
+}
+ 
+2. Логіка взаємодії серверної частини з клієнтами
+csharp КопироватьРедактировать
+public class SoilAnalysisController : ApiController
+{
+private readonly SoilAnalysisRepository _repository;
+
+public SoilAnalysisController()
+{
+_repository = new SoilAnalysisRepository("your_connection_string_here");
+}
+[HttpGet]
+public IHttpActionResult GetAnalysis(int id)
+{
+var analysis = _repository.GetAnalysisById(id); if (analysis == null)
+{
+return NotFound();
+}
+return Ok(analysis);
+}
+[HttpPost]
+public IHttpActionResult CreateAnalysis(SoilAnalysis analysis)
+{
+// Логіка для додавання нового аналізу в БД
+// Повертає статус 201 якщо успішно додано
+}
+}
+ 
+Графічні ілюстрації
+ 
+1.	UML діаграма прецедентів для серверної частини:
+o	Користувач може зареєструватися в системі.
+o	Користувач може додавати нові аналізи ґрунту.
+o	Користувач може переглядати історію аналізів ґрунту.
+o	Користувач отримує рекомендації щодо добрив на основі результатів аналізу.
+
+
+
+
+
+
+2.	ER діаграма:
+ 
+o	Таблиці: users, soil_analysis, fertilizer_recommendations, weather_data
+ 
+o	Зв'язки:
+	Кожен аналіз ґрунту належить певному користувачу (зв'язок one-to-many між users та soil_analysis).
+	Кожен аналіз ґрунту має відповідні рекомендації щодо добрив (зв'язок one-to-many між soil_analysis та fertilizer_recommendations).
+	Дані про погоду прив'язані до конкретних аналізів ґрунту (зв'язок one-to-many між soil_analysis та weather_data).
+
+Це загальна структура для опису інженерних рішень, специфікації API та фрагментів програмного коду для вашої програми
